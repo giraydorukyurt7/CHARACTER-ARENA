@@ -1,1 +1,23 @@
 env
+
+# Visual Studio Code
+.vscode/
+
+# IntelliJ IDEA / WebStorm / PyCharm
+.idea/
+
+# Others
+*.swp
+
+# Storybook builds
+.storybook-static/
+
+# Jest snapshots
+*.snap
+
+# NPM cache
+.npm/
+
+# Lock files other than package-lock.json
+yarn.lock
+pnpm-lock.yaml
