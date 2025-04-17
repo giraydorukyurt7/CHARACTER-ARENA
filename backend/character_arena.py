@@ -34,37 +34,50 @@
 #if __name__ == '__main__':
 #    app.run(debug=True)
 
-
-# Testing character randomizer:
-
+#########################################################################################################
 import numpy as np
 
 #random_characters = np.arange(0,128)
 
-random_characters = np.array([f"character{i}" for i in range(128)])
+#random_characters = np.array([f"character{i}" for i in range(8)])
+random_characters = ["Optimus Prime", "Naruto", "Heisenberg", "John Wick",
+                     "Wall-E", "Lightning MCQuenn","Hatsune Miku", "Gon"]
+#name,series, age(baby,kid,teen,adult,elder,other), Gender(female,male,other), Picture
 
-print("Original List:")
-print(random_characters)
-
-np.random.shuffle(random_characters)
-
-print("Random Suffle:")
-
-print(random_characters)
-
-random_index = np.random.randint(0,128)
-
-print(random_index)
-
-
-random_numbers = np.random.choice(np.arange(0, 128), size=2, replace=False)
-print(random_numbers)
+#print("Original List:")
+#print(random_characters)
 
 
 
-a = input("Enter left or right: ")
-while not (a=="left" or a=="right"):
-    print("Invalid Input")
-    a = input("Enter left or right: ")
+#random_index = np.random.randint(0,128)
+#
+#print(random_index)
+
+
+#random_numbers = np.random.choice(np.arange(0, 128), size=2, replace=False)
+#print(random_numbers)
+
+print("Number of Characters is: %d\n" % len(random_characters))
+
+while not len(random_characters)==1:
+    np.random.shuffle(random_characters)
+    print("Random Suffle:")
+    print(random_characters)
     
-print(a)
+    new_character_list = []
+    for index in range(0,len(random_characters),2):
+        print(f"{random_characters[index]} or {random_characters[index+1]}")
+        choice = input("Enter left or right: ")
+        while not (choice=="left" or choice=="right"):
+            print("Invalid Input")
+            choice = input("Enter left or right: ")
+        if choice == "left":
+            new_character_list.append(random_characters[index])
+        else:
+            new_character_list.append(random_characters[index+1])
+        #print("index:%d, list:%s" % (index, new_character_list))
+    random_characters = new_character_list
+    
+    
+print("The winner is:")
+print(random_characters)
