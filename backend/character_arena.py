@@ -42,6 +42,18 @@ import numpy as np
 #random_characters = np.array([f"character{i}" for i in range(8)])
 random_characters = ["Optimus Prime", "Naruto", "Heisenberg", "John Wick",
                      "Wall-E", "Lightning MCQuenn","Hatsune Miku", "Gon"]
+
+random_characters = [
+    {"name": "Optimus Prime", "series": "Transformers", "age": "adult", "gender": "male", "picture": "path/to/optimus.jpg"},
+    {"name": "Naruto", "series": "Naruto", "age": "teen", "gender": "male", "picture": "path/to/naruto.jpg"},
+    {"name": "Heisenberg", "series": "Breaking Bad", "age": "adult", "gender": "male", "picture": "path/to/heisenberg.jpg"},
+    {"name": "John Wick", "series": "John Wick", "age": "adult", "gender": "male", "picture": "path/to/johnwick.jpg"},
+    {"name": "Wall-E", "series": "Wall-E", "age": "other", "gender": "other", "picture": "path/to/walle.jpg"},
+    {"name": "Lightning McQueen", "series": "Cars", "age": "adult", "gender": "male", "picture": "path/to/mcqueen.jpg"},
+    {"name": "Hatsune Miku", "series": "Vocaloid", "age": "teen", "gender": "female", "picture": "path/to/miku.jpg"},
+    {"name": "Gon", "series": "Hunter x Hunter", "age": "kid", "gender": "male", "picture": "path/to/gon.jpg"}
+]
+
 #name,series, age(baby,kid,teen,adult,elder,other), Gender(female,male,other), Picture
 
 #print("Original List:")
@@ -63,11 +75,24 @@ while not len(random_characters)==1:
     np.random.shuffle(random_characters)
     print("Random Suffle:")
     print(random_characters)
-    
     new_character_list = []
+
+    #TODO
+    #add if else block to save it into next round if character quantity is not power of 2
+
+
+    i = 1
+    print("====================")
+    print("ROUND %d" %i)
+    print("====================")
     for index in range(0,len(random_characters),2):
-        print(f"{random_characters[index]} or {random_characters[index+1]}")
-        choice = input("Enter left or right: ")
+        print("\nSelect the best character:")
+        print(f"        {random_characters[index]["name"]} or {random_characters[index+1]["name"]}")
+        print(f"Series: {random_characters[index]["series"]} | {random_characters[index+1]["series"]}")
+        print(f"Age:    {random_characters[index]["age"]} | {random_characters[index+1]["age"]}")
+        print(f"Gender: {random_characters[index]["gender"]} | {random_characters[index+1]["gender"]}")
+        print(f"Picture:{random_characters[index]["picture"]} | {random_characters[index+1]["picture"]}")
+        choice = input("\nEnter left or right: ")
         while not (choice=="left" or choice=="right"):
             print("Invalid Input")
             choice = input("Enter left or right: ")
@@ -76,8 +101,14 @@ while not len(random_characters)==1:
         else:
             new_character_list.append(random_characters[index+1])
         #print("index:%d, list:%s" % (index, new_character_list))
+        print("---------------------------------------")
     random_characters = new_character_list
     
     
-print("The winner is:")
-print(random_characters)
+print("==========The WINNER!!!==========")
+
+print(f"        {random_characters[index]["name"]}")
+print(f"Series: {random_characters[index]["series"]}")
+print(f"Age:    {random_characters[index]["age"]}")
+print(f"Gender: {random_characters[index]["gender"]}") 
+print(f"Picture:{random_characters[index]["picture"]}")
