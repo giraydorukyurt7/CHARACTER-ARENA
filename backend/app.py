@@ -14,7 +14,7 @@ game_characters  = []
 winners          = []
 round_index      = 0
 match_index      = 0
-
+round_start_count = 0
 
 #SQL Connection
 def get_characters_array():
@@ -82,14 +82,20 @@ def remove_until_power_of_two(listname):
 
 @app.route("/api/start_game", methods=["POST"])
 def start_game():
-    global game_characters, round_index, match_index
+    global game_characters, round_index, match_index, round_start_count
     characters = get_characters_array()
     characters = remove_until_power_of_two(characters)
     np.random.shuffle(characters)
     game_characters = list(characters)
     round_index = 1
     match_index = 0
-    return jsonify({"status":"game_started"})
+    round_start_count = len(game_characters)
+    return jsonify({
+        "status": "game_started",
+        "round_total_players": round_start_count
+    })
+
+
 
 @app.route("/api/next_match")
 def next_match():
@@ -126,7 +132,7 @@ def next_match():
 #Get the answer
 @app.route("/api/selection", methods=["POST"])
 def handle_selection():
-    global game_characters, winners, match_index, round_index
+    global game_characters, winners, match_index, round_index, round_start_count
 
     data = request.get_json()
     selected = data.get("selected_character")
@@ -149,12 +155,16 @@ def handle_selection():
         winners = []
         match_index = 0
         round_index += 1
+        round_start_count = len(game_characters)
 
     return jsonify({
         "status": "success",
         "remaining": len(game_characters),
-        "round": round_index
+        "round": round_index,
+        "match": match_index // 2 + 1,
+        "round_total_players": round_start_count
     }), 200
+
 
 #Send 2 character
 @app.route("/api/characters")
