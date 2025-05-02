@@ -1,15 +1,12 @@
 .character-pair-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
-    margin-top: 20px;
-  }
-  
-  .character-card {
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 12px;
-    width: 250px;
-    text-align: center;
-  }
-  
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.character-pair-container img {
+  border-radius: 8px;
+  margin-top: 10px;
+}

@@ -14,6 +14,8 @@ function App() {
   const [winner, setWinner] = useState(null);
 
   useEffect(() => {
+    document.body.style.background = "url('/background.jpg') no-repeat center center fixed";
+    document.body.style.backgroundSize = "cover";    
     if (gameStage === 3) {
       fetch("http://127.0.0.1:5000/api/start_game", { method: "POST" })
         .then(res => res.json())

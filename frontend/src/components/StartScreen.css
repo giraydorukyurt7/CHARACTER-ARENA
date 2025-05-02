@@ -1,0 +1,14 @@
+.instructions-box {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 2rem auto;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .instructions-box h3 {
+    margin-bottom: 1rem;
+  }
+  
