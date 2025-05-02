@@ -14,11 +14,18 @@ const CharacterCard = ({character, side, onSelect}) => (
 );
 
 
-const CharacterPair = ({characters, onSelect}) =>(
-    <div className="character-pair-container">
+const CharacterPair = ({ characters, onSelect }) => {
+    if (!characters || characters.length < 2 || !characters[0] || !characters[1]) {
+      return <div>Loading match...</div>;
+    }
+  
+    return (
+      <div className="character-pair-container">
         <CharacterCard character={characters[0]} side="left" onSelect={onSelect} />
         <CharacterCard character={characters[1]} side="right" onSelect={onSelect} />
-    </div>
-);
+      </div>
+    );
+  };
+  
 
 export default CharacterPair;

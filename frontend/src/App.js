@@ -1,18 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import CharacterPair from './CharacterPair';
+import StartScreen from './components/StartScreen';
+import SQLScreen from './components/SQLScreen';
+import GameScreen from './components/GameScreen';
+import WinnerScreen from './components/WinnerScreen';
 
-function App(){
+function App() {
+  const [gameStage, setGameStage] = useState(1); // 1=start, 2=sql, 3=game, 4=winner
   const [characters, setCharacters] = useState([]);
-  const [loading, setLoading]       = useState(true);
-  const [roundInfo, setRoundInfo]   = useState({ round: 1, match: 1 });
+  const [loading, setLoading] = useState(true);
+  const [roundInfo, setRoundInfo] = useState({ round: 1, match: 1 });
   const [remainingCount, setRemainingCount] = useState(null);
   const [roundTotalPlayers, setRoundTotalPlayers] = useState(null);
   const [winner, setWinner] = useState(null);
 
+  useEffect(() => {
+    if (gameStage === 3) {
+      fetch("http://127.0.0.1:5000/api/start_game", { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+          if (data.round_total_players) {
+            setRoundTotalPlayers(data.round_total_players);
+          }
+          fetchNextMatch();
+        });
+    }
+  }, [gameStage]);
+
   const fetchNextMatch = () => {
     fetch("http://127.0.0.1:5000/api/next_match")
-      .then((response) => response.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         if (data.status === "game_over") {
           setWinner({
             name: data.winner[0],
@@ -22,43 +39,25 @@ function App(){
             picture: data.winner[4]
           });
           setCharacters([]);
+          setGameStage(4);
         } else if (data.status === "round_over") {
-          alert("Round is over, new matches are loading...");
+          alert("Round over. Advancing...");
           fetchNextMatch();
         } else {
           setCharacters(data);
           setLoading(false);
         }
-      })
-      .catch((error) => console.error("API Error: ", error));
-  };
-  
-  
-
-  useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/start_game", {
-      method: "POST",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.round_total_players) {
-          setRoundTotalPlayers(data.round_total_players);
-        }
-        fetchNextMatch();
       });
-  }, []);
-  
-  
+  };
 
   const handleSelect = (side) => {
     fetch("http://127.0.0.1:5000/api/selection", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ selected_character: side }),
+      body: JSON.stringify({ selected_character: side })
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Server response:", data);
+      .then(res => res.json())
+      .then(data => {
         if (data.status === "success") {
           setRoundInfo({ round: data.round, match: data.match });
           setRemainingCount(data.remaining);
@@ -67,7 +66,15 @@ function App(){
         fetchNextMatch();
       });
   };
-  
+
+  const handleRestart = () => {
+    setWinner(null);
+    setCharacters([]);
+    setRoundInfo({ round: 1, match: 1 });
+    setRemainingCount(null);
+    setRoundTotalPlayers(null);
+    setGameStage(1);
+  };
 
   const renderStageLabel = () => {
     if (winner) return <h3>🏆 WINNER!</h3>;
@@ -76,62 +83,24 @@ function App(){
     if (remainingCount === 2) return <h3>FINALS</h3>;
     return null;
   };
-  
-  
 
-  const renderVsInfo = () => {
-    if (!roundTotalPlayers || roundTotalPlayers < 2) return null;
-    const half = Math.floor(roundTotalPlayers / 2);
-    return <h3>{half} vs {half}</h3>;
-  };
-  
+  if (gameStage === 1) return <StartScreen onStart={() => setGameStage(2)} />;
+  if (gameStage === 2) return <SQLScreen onApply={() => setGameStage(3)} />;
+  if (gameStage === 3)
+    return (
+      <GameScreen
+        characters={characters}
+        roundInfo={roundInfo}
+        remainingCount={remainingCount}
+        roundTotalPlayers={roundTotalPlayers}
+        onSelect={handleSelect}
+        renderStageLabel={renderStageLabel}
+      />
+    );
+  if (gameStage === 4 && winner)
+    return <WinnerScreen winner={winner} onRestart={handleRestart} renderStageLabel={renderStageLabel} />;
 
-  if (loading) {
-    return (
-      <div className="App">
-        <h1>Character Arena</h1>
-        <div>Loading...</div>
-      </div>
-    );
-  }
-  
-  if (loading) {
-    return (
-      <div className="App">
-        <h1>Character Arena</h1>
-        <div>Loading...</div>
-      </div>
-    );
-  }
-  
-  if (winner) {
-    return (
-      <div className="App">
-        <h1>Character Arena</h1>
-        {renderStageLabel()}
-        <div className="winner-card">
-          <div className="winner-card-content">
-            <h2>{winner.name}</h2>
-            <p>Series: {winner.series}</p>
-            <p>Age: {winner.age}</p>
-            <p>Gender: {winner.gender}</p>
-            <img src={winner.picture} alt={winner.name} width="200" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-  
-  return (
-    <div className="App">
-      <h1>Character Arena</h1>
-      <h2>Round {roundInfo.round} - Match {roundInfo.match}</h2>
-      {renderVsInfo()}
-      {renderStageLabel()}
-      <CharacterPair characters={characters} onSelect={handleSelect} />
-    </div>
-  );
-  
+  return null;
 }
 
 export default App;
