@@ -1,4 +1,13 @@
 
+This project made with:
+Frontend: REACT
+Backend : Python - Flask
+DataBase: MySQL
+
+
+
+
+
 Open Terminal 1
 
 Type: 
