@@ -7,13 +7,20 @@ function App(){
   const [roundInfo, setRoundInfo]   = useState({ round: 1, match: 1 });
   const [remainingCount, setRemainingCount] = useState(null);
   const [roundTotalPlayers, setRoundTotalPlayers] = useState(null);
+  const [winner, setWinner] = useState(null);
 
   const fetchNextMatch = () => {
     fetch("http://127.0.0.1:5000/api/next_match")
       .then((response) => response.json())
       .then((data) => {
         if (data.status === "game_over") {
-          alert(`The winner is: ${data.winner[0]}`);
+          setWinner({
+            name: data.winner[0],
+            series: data.winner[1],
+            age: data.winner[2],
+            gender: data.winner[3],
+            picture: data.winner[4]
+          });
           setCharacters([]);
         } else if (data.status === "round_over") {
           alert("Round is over, new matches are loading...");
@@ -25,6 +32,8 @@ function App(){
       })
       .catch((error) => console.error("API Error: ", error));
   };
+  
+  
 
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/start_game", {
@@ -61,11 +70,13 @@ function App(){
   
 
   const renderStageLabel = () => {
+    if (winner) return <h3>🏆 WINNER!</h3>;
     if (remainingCount === 8) return <h3>QUARTER FINALS</h3>;
     if (remainingCount === 4) return <h3>SEMI FINALS</h3>;
     if (remainingCount === 2) return <h3>FINALS</h3>;
     return null;
   };
+  
   
 
   const renderVsInfo = () => {
@@ -75,24 +86,52 @@ function App(){
   };
   
 
-  if (loading || characters.length < 2){
-    return(
-      <div className='App'>
+  if (loading) {
+    return (
+      <div className="App">
         <h1>Character Arena</h1>
         <div>Loading...</div>
       </div>
     );
   }
-
-  return(
-    <div className='App'>
+  
+  if (loading) {
+    return (
+      <div className="App">
+        <h1>Character Arena</h1>
+        <div>Loading...</div>
+      </div>
+    );
+  }
+  
+  if (winner) {
+    return (
+      <div className="App">
+        <h1>Character Arena</h1>
+        {renderStageLabel()}
+        <div className="winner-card">
+          <div className="winner-card-content">
+            <h2>{winner.name}</h2>
+            <p>Series: {winner.series}</p>
+            <p>Age: {winner.age}</p>
+            <p>Gender: {winner.gender}</p>
+            <img src={winner.picture} alt={winner.name} width="200" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="App">
       <h1>Character Arena</h1>
       <h2>Round {roundInfo.round} - Match {roundInfo.match}</h2>
       {renderVsInfo()}
       {renderStageLabel()}
-      <CharacterPair characters={characters} onSelect={handleSelect}/>
+      <CharacterPair characters={characters} onSelect={handleSelect} />
     </div>
   );
+  
 }
 
 export default App;
