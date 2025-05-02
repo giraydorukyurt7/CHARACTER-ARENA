@@ -37,20 +37,54 @@
 #########################################################################################################
 import numpy as np
 import math
+import mysql.connector
+
 #random_characters = np.arange(0,128)
 
 #random_characters = np.array([f"character{i}" for i in range(8)])
 
-random_characters = [
-    {"name": "Optimus Prime", "series": "Transformers", "age": "adult", "gender": "male", "picture": "path/to/optimus.jpg"},
-    {"name": "Naruto", "series": "Naruto", "age": "teen", "gender": "male", "picture": "path/to/naruto.jpg"},
-    {"name": "Heisenberg", "series": "Breaking Bad", "age": "adult", "gender": "male", "picture": "path/to/heisenberg.jpg"},
-    {"name": "John Wick", "series": "John Wick", "age": "adult", "gender": "male", "picture": "path/to/johnwick.jpg"},
-    {"name": "Wall-E", "series": "Wall-E", "age": "other", "gender": "other", "picture": "path/to/walle.jpg"},
-    {"name": "Lightning McQueen", "series": "Cars", "age": "adult", "gender": "male", "picture": "path/to/mcqueen.jpg"},
-    {"name": "Hatsune Miku", "series": "Vocaloid", "age": "teen", "gender": "female", "picture": "path/to/miku.jpg"},
-    {"name": "Gon", "series": "Hunter x Hunter", "age": "kid", "gender": "male", "picture": "path/to/gon.jpg"}
-]
+#random_characters = [
+#    {"name": "Optimus Prime", "series": "Transformers", "age": "adult", "gender": "male", "picture": "path/to/optimus.jpg"},
+#    {"name": "Naruto", "series": "Naruto", "age": "teen", "gender": "male", "picture": "path/to/naruto.jpg"},
+#    {"name": "Heisenberg", "series": "Breaking Bad", "age": "adult", "gender": "male", "picture": "path/to/heisenberg.jpg"},
+#    {"name": "John Wick", "series": "John Wick", "age": "adult", "gender": "male", "picture": "path/to/johnwick.jpg"},
+#    {"name": "Wall-E", "series": "Wall-E", "age": "other", "gender": "other", "picture": "path/to/walle.jpg"},
+#    {"name": "Lightning McQueen", "series": "Cars", "age": "adult", "gender": "male", "picture": "path/to/mcqueen.jpg"},
+#    {"name": "Hatsune Miku", "series": "Vocaloid", "age": "teen", "gender": "female", "picture": "path/to/miku.jpg"},
+#    {"name": "Gon", "series": "Hunter x Hunter", "age": "kid", "gender": "male", "picture": "path/to/gon.jpg"}
+#]
+
+def get_characters_array():
+    #Connection:
+    conn = mysql.connector.connect(host = "localhost",
+                                   user="root",
+                                   password="2002g",
+                                   database="character_arena")
+    cursor = conn.cursor(dictionary=True)
+
+    #Select all characters
+    cursor.execute("SELECT name, series, age, gender, picture FROM characters")
+    rows = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    #Define dtype for Numpy
+    dtype = np.dtype([('name',    'U100'),
+                      ('series',  'U100'),
+                      ('age',     'U10'),
+                      ('gender',  'U10'),
+                      ('picture', 'U255')])
+
+    #Create structured array
+    arr = np.zeros(len(rows), dtype=dtype)
+    for i, row in enumerate(rows):
+        arr[i] = (row['name'],
+                  row['series'],
+                  row['age'],
+                  row['gender'],
+                  row['picture'])
+    return arr
 
 def print_list(listname):
     for i in range(len(listname)):
@@ -85,6 +119,8 @@ def remove_until_power_of_two(listname):
 
 #random_numbers = np.random.choice(np.arange(0, 128), size=2, replace=False)
 #print(random_numbers)
+random_characters = get_characters_array()
+print_list(random_characters)
 
 print("Number of Characters is: %d\n" % len(random_characters))
 
