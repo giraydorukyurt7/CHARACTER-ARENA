@@ -1,61 +1,19 @@
-#from flask import Flask, jsonify, send_from_directory
-#from flask_cors import CORS
-#import mysql.connector
-#import os
-#
-#app = Flask(__name__, static_folder="../frontend/build", static_url_path="/")
-#CORS(app)
-#
-## Veritabanı bağlantısı
-#db = mysql.connector.connect(
-#    host="localhost",
-#    user="root",
-#    password="2002",
-#    database="fandom_game"
-#)
-#
-#@app.route('/characters')
-#def get_characters():
-#    cursor = db.cursor(dictionary=True)
-#    cursor.execute("SELECT * FROM characters")
-#    results = cursor.fetchall()
-#    return jsonify(results)
-#
-## React'in ana dosyasını servis etme
-#@app.route('/')
-#def serve_react_app():
-#    return send_from_directory(app.static_folder, 'index.html')
-#
-## Flask'ın diğer React dosyalarını servis etmesi için
-#@app.route('/<path:path>')
-#def serve_static_files(path):
-#    return send_from_directory(app.static_folder, path)
-#
-#if __name__ == '__main__':
-#    app.run(debug=True)
-
-#########################################################################################################
 import numpy as np
 import math
 import mysql.connector
 from flask import Flask, jsonify
 from flask_cors import CORS
+from flask import request
 
 app = Flask(__name__)
 CORS(app)
 
-
-#random_characters = [
-#    {"name": "Optimus Prime", "series": "Transformers", "age": "adult", "gender": "male", "picture": "path/to/optimus.jpg"},
-#    {"name": "Naruto", "series": "Naruto", "age": "teen", "gender": "male", "picture": "path/to/naruto.jpg"},
-#    {"name": "Heisenberg", "series": "Breaking Bad", "age": "adult", "gender": "male", "picture": "path/to/heisenberg.jpg"},
-#    {"name": "John Wick", "series": "John Wick", "age": "adult", "gender": "male", "picture": "path/to/johnwick.jpg"},
-#    {"name": "Wall-E", "series": "Wall-E", "age": "other", "gender": "other", "picture": "path/to/walle.jpg"},
-#    {"name": "Lightning McQueen", "series": "Cars", "age": "adult", "gender": "male", "picture": "path/to/mcqueen.jpg"},
-#    {"name": "Hatsune Miku", "series": "Vocaloid", "age": "teen", "gender": "female", "picture": "path/to/miku.jpg"},
-#    {"name": "Gon", "series": "Hunter x Hunter", "age": "kid", "gender": "male", "picture": "path/to/gon.jpg"}
-#]
-
+#Global variables
+latest_selection = None
+game_characters  = []
+winners          = []
+round_index      = 0
+match_index      = 0
 
 
 #SQL Connection
@@ -118,59 +76,87 @@ def remove_until_power_of_two(listname):
         listname = listname[:-number_of_elements_to_remove]
     return listname
 
-#
-#random_characters = get_characters_array()
-#print_list(random_characters)
-#
-#print("Number of Characters is: %d\n" % len(random_characters))
-#
-#random_characters = remove_until_power_of_two(random_characters)
-#    
-#round_ = 0
-#while not len(random_characters)==1:
-#    np.random.shuffle(random_characters)
-#
-#    print("The Character List:\n")
-#    print_list(random_characters)
-#    new_character_list = []
-#
-#    round_+=1
-#    match_=0
-#    for index in range(0,len(random_characters),2):
-#        match_+=1
-#        print("====================")
-#        print("ROUND %d - Match %d" %(round_, match_))
-#        print("====================")
-#    
-#        print("\nSelect the best character:")
-#        print(f"        {random_characters[index]["name"]} or {random_characters[index+1]["name"]}")
-#        print(f"Series: {random_characters[index]["series"]} | {random_characters[index+1]["series"]}")
-#        print(f"Age:    {random_characters[index]["age"]} | {random_characters[index+1]["age"]}")
-#        print(f"Gender: {random_characters[index]["gender"]} | {random_characters[index+1]["gender"]}")
-#        print(f"Picture:{random_characters[index]["picture"]} | {random_characters[index+1]["picture"]}")
-#        choice = input("\nEnter left or right: ")
-#        while not (choice=="left" or choice=="right"):
-#            print("Invalid Input")
-#            choice = input("Enter left or right: ")
-#        if choice == "left":
-#            new_character_list.append(random_characters[index])
-#        else:
-#            new_character_list.append(random_characters[index+1])
-#        print("---------------------------------------")
-#    random_characters = new_character_list
-#    
-#    
-#print("==========The WINNER!!!==========")
-#
-#print(f"        {random_characters[0]["name"]}")
-#print(f"Series: {random_characters[0]["series"]}")
-#print(f"Age:    {random_characters[0]["age"]}")
-#print(f"Gender: {random_characters[0]["gender"]}") 
-#print(f"Picture:{random_characters[0]["picture"]}")
 
 
 #flask tests
 
+@app.route("/api/start_game", methods=["POST"])
+def start_game():
+    global game_characters, round_index, match_index
+    characters = get_characters_array()
+    characters = remove_until_power_of_two(characters)
+    np.random.shuffle(characters)
+    game_characters = list(characters)
+    round_index = 1
+    match_index = 0
+    return jsonify({"status":"game_started"})
+
+@app.route("/api/next_match")
+def next_match():
+    global game_characters, match_index
+    if len(game_characters)==1:
+        return jsonify({"status":"game_over",
+                        "winner":game_characters[0].tolist()})
+    #send pairs
+
+    if match_index >= len(game_characters)-1:
+        return jsonify({"status":"round_over"})
+    
+
+
+    pair = game_characters[match_index:match_index + 2]
+
+    return jsonify([
+        {
+            "name"    : pair[0]["name"],
+            "series"  : pair[0]["series"],
+            "age"     : pair[0]["age"],
+            "gender"  : pair[0]["gender"],
+            "picture" : pair[0]["picture"]
+        },
+        {
+            "name"    : pair[1]["name"],
+            "series"  : pair[1]["series"],
+            "age"     : pair[1]["age"],
+            "gender"  : pair[1]["gender"],
+            "picture" : pair[1]["picture"]
+        }
+    ])
+
+#Get the answer
+@app.route("/api/selection", methods=["POST"])
+def handle_selection():
+    global game_characters, winners, match_index, round_index
+
+    data = request.get_json()
+    selected = data.get("selected_character")
+
+    if selected not in ("left", "right"):
+        return jsonify({"status": "error", "message": "Invalid selection"}), 400
+
+    if match_index >= len(game_characters) - 1:
+        return jsonify({"status": "error", "message": "No more matches in this round"}), 400
+
+    pair = game_characters[match_index:match_index + 2]
+    winner = pair[0] if selected == "left" else pair[1]
+    winners.append(winner)
+
+    match_index += 2
+
+    # round over
+    if match_index >= len(game_characters):
+        game_characters = winners
+        winners = []
+        match_index = 0
+        round_index += 1
+
+    return jsonify({
+        "status": "success",
+        "remaining": len(game_characters),
+        "round": round_index
+    }), 200
+
+#Send 2 character
 @app.route("/api/characters")
 def characters_api():
     characters_array = get_characters_array()
@@ -186,6 +172,9 @@ def characters_api():
         }
         characters_list.append(character_dict)
     return jsonify(characters_list)
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,30 +1,24 @@
 import React from "react";
 import './CharacterPair.css';
 
-function CharacterPair({characters}){
-    if(characters.length<2)
-        return <div>Unsufficient amount of characters</div>
-
-    const [left, right] = characters;
-
-    return( 
-    <div className="character-pair-container">
-        <div className="character-card">
-            <h2>{left.name}</h2>
-            <p>Series: {left.series}</p>
-            <p>Age: {left.age}</p>
-            <p>Gender: {left.gender}</p>
-            <img src={left.picture} alt={left.name} width="100"/>
-        </div>
-        <div className="character-card">
-            <h2>{right.name}</h2>
-            <p>Series: {right.series}</p>
-            <p>Age: {right.age}</p>
-            <p>Gender: {right.gender}</p>
-            <img src={right.picture} alt={right.name} width="100"/>
-        </div>        
+const CharacterCard = ({character, side, onSelect}) => (
+    <div style={{textAlign:"center"}}>
+        <h2>{character.name}</h2>
+        <p>Series: {character.series}</p>
+        <p>Age: {character.age}</p>
+        <p>Gender: {character.gender}</p>
+        <img src={character.picture} alt={character.name} width="150"/>
+        <br/>
+        <button onClick={() =>onSelect(side)}>Select {side}</button>
     </div>
-    );
-}
+);
+
+
+const CharacterPair = ({characters, onSelect}) =>(
+    <div className="character-pair-container">
+        <CharacterCard character={characters[0]} side="left" onSelect={onSelect} />
+        <CharacterCard character={characters[1]} side="right" onSelect={onSelect} />
+    </div>
+);
 
 export default CharacterPair;
