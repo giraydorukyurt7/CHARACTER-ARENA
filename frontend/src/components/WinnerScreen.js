@@ -4,7 +4,7 @@ import './WinnerScreen.css';
 function WinnerScreen({ winner, onRestart, renderStageLabel }) {
   return (
     <div className="App">
-      <div className="content-wrapper">
+      <div className="overlay-container">
         <h1>Character Arena</h1>
         {renderStageLabel()}
         <div className="winner-card">

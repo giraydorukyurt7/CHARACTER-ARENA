@@ -4,7 +4,7 @@ import './StartScreen.css';
 function StartScreen({ onStart }) {
   return (
     <div className="App">
-      <div className="content-wrapper">
+      <div className="overlay-container">
         <h1>Character Arena</h1>
         <div className="instructions-box">
           <h3>How to Play:</h3>

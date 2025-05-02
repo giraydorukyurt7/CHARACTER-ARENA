@@ -83,17 +83,44 @@ def remove_until_power_of_two(listname):
 @app.route("/api/start_game", methods=["POST"])
 def start_game():
     global game_characters, round_index, match_index, round_start_count
-    characters = get_characters_array()
-    characters = remove_until_power_of_two(characters)
+
+    data = request.get_json()
+    selected_series = data.get("series", [])
+
+    conn = mysql.connector.connect(
+        host="localhost", user="root", password="2002g", database="character_arena"
+    )
+    cursor = conn.cursor(dictionary=True)
+    format_strings = ','.join(['%s'] * len(selected_series))
+    cursor.execute(
+        f"SELECT name, series, age, gender, picture FROM characters WHERE series IN ({format_strings})",
+        tuple(selected_series)
+    )
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    dtype = np.dtype([
+        ('name', 'U100'), ('series', 'U100'),
+        ('age', 'U10'), ('gender', 'U10'), ('picture', 'U255')
+    ])
+    arr = np.zeros(len(rows), dtype=dtype)
+    for i, row in enumerate(rows):
+        arr[i] = (row['name'], row['series'], row['age'], row['gender'], row['picture'])
+
+    characters = remove_until_power_of_two(arr)
     np.random.shuffle(characters)
     game_characters = list(characters)
+
     round_index = 1
     match_index = 0
-    round_start_count = len(game_characters)
+    round_start_count = len(game_characters)  # <-- EKLENDİ
+
     return jsonify({
         "status": "game_started",
         "round_total_players": round_start_count
     })
+
 
 
 
@@ -166,6 +193,7 @@ def handle_selection():
     }), 200
 
 
+
 #Send 2 character
 @app.route("/api/characters")
 def characters_api():
@@ -183,6 +211,17 @@ def characters_api():
         characters_list.append(character_dict)
     return jsonify(characters_list)
 
+@app.route("/api/series")
+def get_series():
+    conn = mysql.connector.connect(
+        host="localhost", user="root", password="2002g", database="character_arena"
+    )
+    cursor = conn.cursor()
+    cursor.execute("SELECT DISTINCT series FROM characters")
+    results = [row[0] for row in cursor.fetchall()]
+    cursor.close()
+    conn.close()
+    return jsonify(results)
 
 
 

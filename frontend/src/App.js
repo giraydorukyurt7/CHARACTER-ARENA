@@ -3,25 +3,29 @@ import StartScreen from './components/StartScreen';
 import SQLScreen from './components/SQLScreen';
 import GameScreen from './components/GameScreen';
 import WinnerScreen from './components/WinnerScreen';
+import './App.css';
 
 function App() {
-  const [gameStage, setGameStage] = useState(1); // 1=start, 2=sql, 3=game, 4=winner
+  const [gameStage, setGameStage] = useState(1);
   const [characters, setCharacters] = useState([]);
   const [roundInfo, setRoundInfo] = useState({ round: 1, match: 1 });
   const [remainingCount, setRemainingCount] = useState(null);
   const [roundTotalPlayers, setRoundTotalPlayers] = useState(null);
   const [winner, setWinner] = useState(null);
+  const [selectedSeries, setSelectedSeries] = useState([]);
 
-  // Arka plan sadece bir kere ayarlanır
   useEffect(() => {
     document.body.style.background = "url('/background.jpg') no-repeat center center fixed";
     document.body.style.backgroundSize = "cover";
   }, []);
 
-  // Oyun başlatıldığında ilk veri çekilir
   useEffect(() => {
-    if (gameStage === 3) {
-      fetch("http://127.0.0.1:5000/api/start_game", { method: "POST" })
+    if (gameStage === 3 && selectedSeries.length > 0) {
+      fetch("http://127.0.0.1:5000/api/start_game", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ series: selectedSeries })
+      })
         .then(res => res.json())
         .then(data => {
           if (data.round_total_players) {
@@ -78,6 +82,7 @@ function App() {
     setRoundInfo({ round: 1, match: 1 });
     setRemainingCount(null);
     setRoundTotalPlayers(null);
+    setSelectedSeries([]);
     setGameStage(1);
   };
 
@@ -90,7 +95,7 @@ function App() {
   };
 
   if (gameStage === 1) return <StartScreen onStart={() => setGameStage(2)} />;
-  if (gameStage === 2) return <SQLScreen onApply={() => setGameStage(3)} />;
+  if (gameStage === 2) return <SQLScreen onApply={(series) => { setSelectedSeries(series); setGameStage(3); }} />;
   if (gameStage === 3)
     return (
       <GameScreen

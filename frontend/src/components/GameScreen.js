@@ -11,7 +11,7 @@ function GameScreen({ characters, roundInfo, remainingCount, roundTotalPlayers, 
 
   return (
     <div className="App">
-      <div className="content-wrapper">
+      <div className="overlay-container">
         <h1>Character Arena</h1>
         <h2>Round {roundInfo.round} - Match {roundInfo.match}</h2>
         {renderVsInfo()}
