@@ -6,7 +6,19 @@
   margin-top: 2rem;
 }
 
-.character-pair-container img {
+.character-card {
+  text-align: center;
+  width: 250px;
+  min-height: 360px;
+  background-color: rgba(255, 255, 255, 0.75);
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.character-card img {
+  max-width: 150px;
+  max-height: 200px;
+  object-fit: cover;
   border-radius: 8px;
-  margin-top: 10px;
 }

@@ -11,11 +11,13 @@ function GameScreen({ characters, roundInfo, remainingCount, roundTotalPlayers, 
 
   return (
     <div className="App">
-      <h1>Character Arena</h1>
-      <h2>Round {roundInfo.round} - Match {roundInfo.match}</h2>
-      {renderVsInfo()}
-      {renderStageLabel()}
-      <CharacterPair characters={characters} onSelect={onSelect} />
+      <div className="content-wrapper">
+        <h1>Character Arena</h1>
+        <h2>Round {roundInfo.round} - Match {roundInfo.match}</h2>
+        {renderVsInfo()}
+        {renderStageLabel()}
+        <CharacterPair characters={characters} onSelect={onSelect} />
+      </div>
     </div>
   );
 }

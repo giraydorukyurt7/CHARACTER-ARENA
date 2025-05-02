@@ -7,15 +7,19 @@ import WinnerScreen from './components/WinnerScreen';
 function App() {
   const [gameStage, setGameStage] = useState(1); // 1=start, 2=sql, 3=game, 4=winner
   const [characters, setCharacters] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [roundInfo, setRoundInfo] = useState({ round: 1, match: 1 });
   const [remainingCount, setRemainingCount] = useState(null);
   const [roundTotalPlayers, setRoundTotalPlayers] = useState(null);
   const [winner, setWinner] = useState(null);
 
+  // Arka plan sadece bir kere ayarlanır
   useEffect(() => {
     document.body.style.background = "url('/background.jpg') no-repeat center center fixed";
-    document.body.style.backgroundSize = "cover";    
+    document.body.style.backgroundSize = "cover";
+  }, []);
+
+  // Oyun başlatıldığında ilk veri çekilir
+  useEffect(() => {
     if (gameStage === 3) {
       fetch("http://127.0.0.1:5000/api/start_game", { method: "POST" })
         .then(res => res.json())
@@ -47,7 +51,6 @@ function App() {
           fetchNextMatch();
         } else {
           setCharacters(data);
-          setLoading(false);
         }
       });
   };
