@@ -1,5 +1,18 @@
-env\Scripts\activate
 
-python .\backend\character_arena.py
+Open Terminal 1
 
-"C:\Program Files\MySQL\MySQL Server 9.2\bin\mysql.exe" -u root -p
+Type: 
+
+cd backend
+python .\app.py
+
+---------------------
+
+Open Terminal 2
+
+cd frontend
+npm start
+
+then visit this adress if it doesn't open automatically
+
+http://localhost:3000/
