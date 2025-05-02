@@ -40,8 +40,6 @@ import math
 #random_characters = np.arange(0,128)
 
 #random_characters = np.array([f"character{i}" for i in range(8)])
-random_characters = ["Optimus Prime", "Naruto", "Heisenberg", "John Wick",
-                     "Wall-E", "Lightning MCQuenn","Hatsune Miku", "Gon"]
 
 random_characters = [
     {"name": "Optimus Prime", "series": "Transformers", "age": "adult", "gender": "male", "picture": "path/to/optimus.jpg"},
