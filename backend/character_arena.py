@@ -36,7 +36,7 @@
 
 #########################################################################################################
 import numpy as np
-
+import math
 #random_characters = np.arange(0,128)
 
 #random_characters = np.array([f"character{i}" for i in range(8)])
@@ -54,11 +54,30 @@ random_characters = [
     {"name": "Gon", "series": "Hunter x Hunter", "age": "kid", "gender": "male", "picture": "path/to/gon.jpg"}
 ]
 
-#name,series, age(baby,kid,teen,adult,elder,other), Gender(female,male,other), Picture
+def print_list(listname):
+    for i in range(len(listname)):
+        print("index:%d, list:%s" % (i, random_characters[i]))
 
-#print("Original List:")
-#print(random_characters)
+def is_power_of_two(n):
+    if n<=0:
+        print("Number of characters are not power of two")
+        return False
+    log_value=math.log2(n)
+    if log_value.is_integer():
+        print("Number of characters are power of two")
+        return True
+    else:
+        print("Number of characters are not power of two")
+        return False
 
+def remove_until_power_of_two(listname):
+    np.random.shuffle(listname)
+    number_of_elements_to_remove = 0
+    if not is_power_of_two(len(listname)):
+        number_of_elements_to_remove = len(listname) - 2**math.floor(math.log2(len(listname)))
+        print("Length of the list is %d, Removing %d elements to make it power of two" % (len(listname),number_of_elements_to_remove))
+        listname = listname[:-number_of_elements_to_remove]
+    return listname
 
 
 #random_index = np.random.randint(0,128)
@@ -71,21 +90,28 @@ random_characters = [
 
 print("Number of Characters is: %d\n" % len(random_characters))
 
+random_characters = remove_until_power_of_two(random_characters)
+    
+round_ = 0
 while not len(random_characters)==1:
     np.random.shuffle(random_characters)
-    print("Random Suffle:")
-    print(random_characters)
+
+    print("The Character List:\n")
+    print_list(random_characters)
     new_character_list = []
 
     #TODO
     #add if else block to save it into next round if character quantity is not power of 2
 
 
-    i = 1
-    print("====================")
-    print("ROUND %d" %i)
-    print("====================")
+    round_+=1
+    match_=0
     for index in range(0,len(random_characters),2):
+        match_+=1
+        print("====================")
+        print("ROUND %d - Match %d" %(round_, match_))
+        print("====================")
+    
         print("\nSelect the best character:")
         print(f"        {random_characters[index]["name"]} or {random_characters[index+1]["name"]}")
         print(f"Series: {random_characters[index]["series"]} | {random_characters[index+1]["series"]}")
@@ -100,7 +126,6 @@ while not len(random_characters)==1:
             new_character_list.append(random_characters[index])
         else:
             new_character_list.append(random_characters[index+1])
-        #print("index:%d, list:%s" % (index, new_character_list))
         print("---------------------------------------")
     random_characters = new_character_list
     

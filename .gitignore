@@ -21,3 +21,6 @@ env
 # Lock files other than package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+
+backend/test.ipynb
