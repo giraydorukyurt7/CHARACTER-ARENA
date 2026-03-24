@@ -1,98 +1,105 @@
-# 🎮 Character Arena
+# Character Arena
 
-A dynamic tournament-style character battle game built with **React**, **Flask**, and **MySQL**.
+Character Arena is a full-stack tournament-style web game where users choose one or more series and vote through random character matchups until a final champion is determined.
 
-![Character Arena Preview](preview.png) 
+Built with **React**, **Flask**, and **MySQL**, the project combines frontend interaction, backend game logic, and database-driven character selection in a dynamic elimination-style format.
 
----
+## Preview
 
-## ⚙️ Technologies Used
+### Series Selection Interface
+Users can choose which series to include before generating tournament matchups.
 
-- 🔹 **Frontend**: React
-- 🔹 **Backend**: Python (Flask)
-- 🔹 **Database**: MySQL
-- 🔹 **Image Search**: DuckDuckGo (script to download image data)
+![Series Selection Interface](preview_series_selection.png)
 
----
+### Tournament Matchup Interface
+Matchup screen showing two randomly selected characters from the user-chosen series, with elimination-based voting to advance the winner.
 
-## 🚀 Getting Started
+![Tournament Matchup Interface](preview.png)
 
-### 📁 1-Clone the Repository
+## Technologies Used
 
-```bash
-git clone https://github.com/giraydorukyurt7/character-arena.git
-cd character-arena
+- **Frontend:** React
+- **Backend:** Python (Flask)
+- **Database:** MySQL
+- **Image Search / Collection:** DuckDuckGo script for downloading image data
+
+## Features
+
+- Select one or more series before starting the tournament
+- Generate random matchups from the selected series
+- Progress through elimination rounds with user voting
+- Track the tournament until a final winner is determined
+- Pull character data dynamically from a MySQL database
+
+## How It Works
+
+1. **Start Screen**  
+   Users read how the game works and begin the tournament.
+
+2. **Series Selection Screen**  
+   Users select one or more series from the database.
+
+3. **Game Screen**  
+   Characters are matched in random head-to-head battles, and the user chooses a winner for each round.
+
+4. **Winner Screen**  
+   The final champion is displayed after all elimination rounds are completed.
+
+## Project Structure
+
+```text
+character-arena/
+├── backend/            # Flask API for game logic and database interaction
+│   └── app.py
+├── database/           # MySQL schema and character data
+│   └── init.sql
+├── frontend/           # React application
+│   ├── public/
+│   └── src/
+├── preview.png
+├── preview_series_selection.png
+└── README.md
 ```
 
-### 🔌 2-Start the Flask Backend
+## Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/giraydorukyurt7/CHARACTER-ARENA.git
+cd CHARACTER-ARENA
+```
+
+### 2. Start the Flask backend
 
 ```bash
 cd backend
 python app.py
 ```
 
-### 🌐 3-Start the React Frontend
+### 3. Start the React frontend
 
 ```bash
 cd frontend
-npm install     # First time only
+npm install
 npm start
 ```
 
-### 4-Visit:
+### 4. Open the app
 
+Visit:
+
+```text
 http://localhost:3000
-
-
-## 🧠 How It Works
-* Start Screen: Read how to play and begin the game.
-
-* SQL Screen: Select one or more series from the database.
-
-* Game Screen: Vote on matchups, one by one.
-
-* Winner Screen: See the final champion and restart.
-
-Characters are pulled dynamically from a MySQL database and displayed in random pairings. The tournament continues until only one winner remains.
-
-
-## 🖼️ Folder Structure
-```bash
-character-arena/
-├── backend/            # Flask API (Python) - handles game logic and database interaction
-│   └── app.py          # Main backend server
-│
-├── frontend/           # React app (user interface)
-│   ├── public/         # Static assets served directly (HTML, favicon, images)
-│   │   ├── background.jpg / no_photo.png / logo.png  # UI assets
-│   │   └── images/     # Character images organized by series (e.g. /naruto, /cars, ...)
-│   │
-│   └── src/            # React source files
-│       ├── App.js      # Main app logic and game state management
-│       ├── App.css     # Global styles
-│       ├── index.js    # Entry point
-│       └── components/ # Modular React components for each screen
-│           ├── CharacterPair.js / .css
-│           ├── GameScreen.js / .css
-│           ├── SQLScreen.js / .css
-│           ├── StartScreen.js / .css
-│           └── WinnerScreen.js / .css
-│
-├── database/           # MySQL scripts (you can store init.sql here)
-│   └── init.sql        # Schema + character data (used to populate MySQL)
-│
-└── README.md           # Project overview and setup instructions
-
 ```
 
-# 📌 Notes
-* Ensure MySQL is running and credentials match your local setup.
+## Notes
 
-* Tested in modern Google Chrome.
+- Make sure MySQL is running and your credentials match the local setup.
+- Character data is pulled dynamically from the database.
+- If an image is missing, a fallback image can be used.
+- The project was tested in a modern browser environment.
 
-* Images are optional — a fallback (no_photo.png) is used if missing.
+## Contact
 
-## 📫 Contact  
-Built with 💻 by [Giray Doruk Yurtseven](https://www.linkedin.com/in/giraydorukyurt7/)  
-🔗 [GitHub](https://github.com/giraydorukyurt7)  
-🔗 [LinkedIn](https://www.linkedin.com/in/giraydorukyurt7/)
+Built by **Giray Doruk Yurtseven**
